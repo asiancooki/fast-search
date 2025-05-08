@@ -57,7 +57,7 @@ app.post('/search', async (req, res) => {
     
         try {
             const profileResponse = await axios.get(profileUrl);
-    
+            console.log('Response HTML:', profileResponse.data.substring(0, 500)); // only print first 500 chars
             const ogTypeMatch = /<meta property=["']og:type["'] content=["']profile["']/.exec(profileResponse.data);
 
             if (ogTypeMatch) {
