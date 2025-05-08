@@ -17,14 +17,21 @@ function App() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [animate, setAnimate] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(true);
+  const [splash, setSplash] = useState(true);
+  const [dots, setDots] = useState('.');
 
+  // Animate dots
   useEffect(() => {
-    // Animation for main container
-    setTimeout(() => setAnimate(true), 100);
-    // Overlay disappears after 2 seconds
-    const timer = setTimeout(() => setShowOverlay(false), 2000);
+    if (!splash) return;
+    const interval = setInterval(() => {
+      setDots(prev => prev.length >= 3 ? '.' : prev + '.');
+    }, 500);
+    return () => clearInterval(interval);
+  }, [splash]);
+
+  // Auto-hide splash after 2.5 sec
+  useEffect(() => {
+    const timer = setTimeout(() => setSplash(false), 2500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -57,22 +64,29 @@ function App() {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* FULLSCREEN OVERLAY */}
-      {showOverlay && (
+      {/* SPLASH SCREEN */}
+      {splash && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
+          zIndex: 10,
           top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: '#111',
-          zIndex: 9999,
+          background: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)',
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          flexDirection: 'column',
-          transition: 'opacity 1s',
-          opacity: showOverlay ? 1 : 0
+          color: '#fff',
+          animation: 'zoomOut 2s ease forwards'
         }}>
-          <h1 style={{ fontSize: '60px', margin: 0, letterSpacing: '2px' }}>FastSearch</h1>
-          <p style={{ fontSize: '16px', color: '#aaa', marginTop: '10px' }}>by Yau Chau</p>
+          <h1 style={{ fontSize: '60px', margin: 0 }}>FastSearch</h1>
+          <p style={{ fontSize: '16px', color: '#aaa', marginTop: '4px' }}>by Yau Chau</p>
+          <p style={{ marginTop: '20px', fontSize: '20px', letterSpacing: '2px' }}>Loading{dots}</p>
+          <style>{`
+            @keyframes zoomOut {
+              0% { transform: scale(1); opacity: 1; }
+              100% { transform: scale(30); opacity: 0; pointer-events: none; }
+            }
+          `}</style>
         </div>
       )}
 
@@ -85,10 +99,18 @@ function App() {
         textAlign: 'center'
       }}>
         <h1 style={{ fontSize: '48px', margin: 0, letterSpacing: '1px' }}>FastSearch</h1>
-        <p style={{ fontSize: '14px', color: '#aaa', marginTop: '4px', textAlign: 'right' }}>by Yau Chau</p>
+        <p style={{
+          fontSize: '16px',
+          marginTop: '5px',
+          background: 'linear-gradient(90deg, #66a6ff, #89f7fe)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          fontWeight: '500',
+        }}>Find your results fast, anywhere.</p>
+        <p style={{ fontSize: '12px', color: '#aaa', textAlign: 'right', margin: 0 }}>by Yau Chau</p>
       </div>
 
-      {/* LINKEDIN ICON BOTTOM RIGHT */}
+      {/* LINKEDIN ICON */}
       <a href="https://www.linkedin.com/in/yauchau/" target="_blank" rel="noopener noreferrer" style={{
         position: 'absolute',
         bottom: '20px',
@@ -101,123 +123,123 @@ function App() {
           transition: 'transform 0.2s',
         }}
           onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-        />
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}/>
       </a>
 
       {/* MAIN CONTAINER */}
-      <div style={{
-        background: 'rgba(20, 20, 20, 0.85)',
-        padding: '40px',
-        borderRadius: '20px',
-        boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
-        width: '90%',
-        maxWidth: '460px',
-        textAlign: 'center',
-        marginTop: '100px',
-        opacity: animate ? 1 : 0,
-        transform: animate ? 'translateY(0)' : 'translateY(-40px)',
-        transition: 'opacity 0.8s ease, transform 0.8s ease'
-      }}>
-        <h2 style={{ marginBottom: '20px' }}>Search <span style={{ color: '#66a6ff' }}>{website}</span></h2>
-
-        {/* ICONS */}
+      {!splash && (
         <div style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          gap: '12px',
-          marginBottom: '20px'
+          background: 'rgba(20, 20, 20, 0.85)',
+          padding: '40px',
+          borderRadius: '20px',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
+          width: '90%',
+          maxWidth: '460px',
+          textAlign: 'center',
+          marginTop: '100px',
+          opacity: 1,
+          transform: 'translateY(0)',
+          transition: 'opacity 0.8s ease, transform 0.8s ease'
         }}>
-          {platforms.map(platform => (
-            <div
-              key={platform.name}
-              onClick={() => setWebsite(platform.name)}
-              style={{
-                cursor: 'pointer',
-                padding: '8px',
-                borderRadius: '50%',
-                background: website === platform.name ? '#66a6ff' : '#222',
-                boxShadow: website === platform.name ? '0 0 15px #66a6ff' : '0 2px 8px rgba(0,0,0,0.5)',
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-              }}
-              onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
-              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-            >
-              <img src={platform.icon} alt={platform.name} style={{
-                filter: website === platform.name ? 'invert(1)' : 'invert(0.7)',
-                width: '28px',
-                height: '28px'
-              }} />
-            </div>
-          ))}
-        </div>
+          <h2 style={{ marginBottom: '20px' }}>Search <span style={{ color: '#66a6ff' }}>{website}</span></h2>
 
-        <input
-          type="text"
-          placeholder="Enter search query"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '12px',
-            margin: '10px 0',
-            border: 'none',
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-            fontSize: '16px'
-          }}
-        />
-
-        <button
-          onClick={handleSearch}
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '12px',
-            margin: '10px 0',
-            border: 'none',
-            borderRadius: '10px',
-            background: loading ? '#555' : '#66a6ff',
-            color: '#fff',
-            fontSize: '16px',
-            cursor: 'pointer',
-            transition: 'background 0.3s'
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '12px',
+            marginBottom: '20px'
           }}>
-          {loading ? 'Searching...' : 'Search'}
-        </button>
+            {platforms.map(platform => (
+              <div
+                key={platform.name}
+                onClick={() => setWebsite(platform.name)}
+                style={{
+                  cursor: 'pointer',
+                  padding: '8px',
+                  borderRadius: '50%',
+                  background: website === platform.name ? '#66a6ff' : '#222',
+                  boxShadow: website === platform.name ? '0 0 15px #66a6ff' : '0 2px 8px rgba(0,0,0,0.5)',
+                  width: '50px',
+                  height: '50px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                <img src={platform.icon} alt={platform.name} style={{
+                  filter: website === platform.name ? 'invert(1)' : 'invert(0.7)',
+                  width: '28px',
+                  height: '28px'
+                }} />
+              </div>
+            ))}
+          </div>
 
-        {results.length > 0 && (
-          <h3 style={{ fontSize: '18px', margin: '20px 0 10px', color: '#ccc' }}>Top 5 Results</h3>
-        )}
-
-        {results.length === 0 && !loading && <p style={{ color: '#ccc' }}>No results yet.</p>}
-
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {results.map((item, idx) => (
-            <li key={idx} style={{
-              background: '#2a2a2a',
-              padding: '10px',
+          <input
+            type="text"
+            placeholder="Enter search query"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px',
+              margin: '10px 0',
+              border: 'none',
               borderRadius: '10px',
-              marginBottom: '15px',
-              textAlign: 'left',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
+              background: '#333',
+              color: '#fff',
+              fontSize: '16px'
+            }}
+          />
+
+          <button
+            onClick={handleSearch}
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '12px',
+              margin: '10px 0',
+              border: 'none',
+              borderRadius: '10px',
+              background: loading ? '#555' : '#66a6ff',
+              color: '#fff',
+              fontSize: '16px',
+              cursor: 'pointer',
+              transition: 'background 0.3s'
             }}>
-              <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: '600', color: '#66a6ff', textDecoration: 'none' }}>
-                {item.title}
-              </a>
-              <br />
-              <small style={{ color: '#aaa' }}>{item.snippet}</small>
-            </li>
-          ))}
-        </ul>
-      </div>
+            {loading ? 'Searching...' : 'Search'}
+          </button>
+
+          {results.length > 0 && (
+            <h3 style={{ fontSize: '18px', margin: '20px 0 10px', color: '#ccc' }}>Top 5 Results</h3>
+          )}
+
+          {results.length === 0 && !loading && <p style={{ color: '#ccc' }}>No results yet.</p>}
+
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {results.map((item, idx) => (
+              <li key={idx} style={{
+                background: '#2a2a2a',
+                padding: '10px',
+                borderRadius: '10px',
+                marginBottom: '15px',
+                textAlign: 'left',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
+              }}>
+                <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: '600', color: '#66a6ff', textDecoration: 'none' }}>
+                  {item.title}
+                </a>
+                <br />
+                <small style={{ color: '#aaa' }}>{item.snippet}</small>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
