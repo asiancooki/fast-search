@@ -63,7 +63,7 @@ function App() {
         justifyContent: 'center',
         alignItems: 'center',
         transform: splashGone ? 'translateY(-100%)' : 'translateY(0)',
-        transition: 'transform 1s ease'
+        transition: 'transform 0.5s ease'
       }}>
         <div style={{ position: 'relative', textAlign: 'center' }}>
           <h1 style={{ fontSize: '60px', margin: 0 }}>FastSearch</h1>
@@ -98,12 +98,12 @@ function App() {
           }}>by Yau Chau</p>
         </div>
         <p style={{
-          fontSize: '16px',
-          marginTop: '10px',
+          fontSize: '22px',
+          marginTop: '30px',
           background: 'linear-gradient(90deg, #66a6ff, #89f7fe)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          fontWeight: '500',
+          fontWeight: '600',
         }}>Find your results fast, anywhere.</p>
       </div>
 
