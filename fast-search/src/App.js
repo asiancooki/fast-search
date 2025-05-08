@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 
 function App() {
+  const platforms = [
+    { name: 'TikTok', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg' },
+    { name: 'Instagram', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg' },
+    { name: 'Facebook', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg' },
+    { name: 'X', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg' },
+    { name: 'LinkedIn', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg' },
+    { name: 'YouTube', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg' },
+    { name: 'Reddit', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/reddit.svg' },
+    { name: 'Threads', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/threads.svg' },
+    { name: 'GitHub', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg' },
+  ];
+
   const [website, setWebsite] = useState('TikTok');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -26,46 +38,60 @@ function App() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #89f7fe, #66a6ff)',
+      background: 'linear-gradient(135deg, #141e30, #243b55)',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       fontFamily: "'Poppins', sans-serif",
-      overflow: 'hidden'
+      color: '#fff',
     }}>
       <div style={{
-        background: 'rgba(255,255,255,0.9)',
+        background: 'rgba(20, 20, 20, 0.85)',
         padding: '40px',
         borderRadius: '20px',
-        boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
+        boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
         width: '90%',
-        maxWidth: '400px',
+        maxWidth: '420px',
         textAlign: 'center'
       }}>
-        <h1 style={{ marginBottom: '20px', color: '#333' }}>Search <span style={{ color: '#66a6ff' }}>{website}</span></h1>
-        
-        <select
-          value={website}
-          onChange={e => setWebsite(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '12px',
-            margin: '10px 0',
-            border: 'none',
-            borderRadius: '10px',
-            background: '#f1f1f1',
-            fontSize: '16px'
-          }}>
-          <option value="TikTok">TikTok</option>
-          <option value="Instagram">Instagram</option>
-          <option value="Facebook">Facebook</option>
-          <option value="X">X</option>
-          <option value="LinkedIn">LinkedIn</option>
-          <option value="YouTube">YouTube</option>
-          <option value="Reddit">Reddit</option>
-          <option value="Threads">Threads</option>
-          <option value="GitHub">GitHub</option>
-        </select>
+        <h1 style={{ marginBottom: '20px' }}>Search <span style={{ color: '#66a6ff' }}>{website}</span></h1>
+
+        {/* ICONS */}
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: '12px',
+          marginBottom: '20px'
+        }}>
+          {platforms.map(platform => (
+            <div
+              key={platform.name}
+              onClick={() => setWebsite(platform.name)}
+              style={{
+                cursor: 'pointer',
+                padding: '8px',
+                borderRadius: '50%',
+                background: website === platform.name ? '#66a6ff' : '#222',
+                boxShadow: website === platform.name ? '0 0 15px #66a6ff' : '0 2px 8px rgba(0,0,0,0.5)',
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              <img src={platform.icon} alt={platform.name} style={{
+                filter: website === platform.name ? 'invert(1)' : 'invert(0.7)',
+                width: '28px',
+                height: '28px'
+              }} />
+            </div>
+          ))}
+        </div>
 
         <input
           type="text"
@@ -78,7 +104,8 @@ function App() {
             margin: '10px 0',
             border: 'none',
             borderRadius: '10px',
-            background: '#f1f1f1',
+            background: '#333',
+            color: '#fff',
             fontSize: '16px'
           }}
         />
@@ -92,7 +119,7 @@ function App() {
             margin: '10px 0',
             border: 'none',
             borderRadius: '10px',
-            background: loading ? '#aaa' : '#66a6ff',
+            background: loading ? '#555' : '#66a6ff',
             color: '#fff',
             fontSize: '16px',
             cursor: 'pointer',
@@ -101,25 +128,25 @@ function App() {
           {loading ? 'Searching...' : 'Search'}
         </button>
 
-        <h2 style={{ fontSize: '18px', margin: '20px 0 10px', color: '#333' }}>Results:</h2>
+        <h2 style={{ fontSize: '18px', margin: '20px 0 10px' }}>Results:</h2>
 
-        {results.length === 0 && !loading && <p style={{ color: '#777' }}>No results yet.</p>}
-        
+        {results.length === 0 && !loading && <p style={{ color: '#ccc' }}>No results yet.</p>}
+
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {results.map((item, idx) => (
             <li key={idx} style={{
-              background: '#f9f9f9',
+              background: '#2a2a2a',
               padding: '10px',
               borderRadius: '10px',
               marginBottom: '10px',
               textAlign: 'left',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
+              boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
             }}>
-              <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: '600', color: '#333', textDecoration: 'none' }}>
+              <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: '600', color: '#66a6ff', textDecoration: 'none' }}>
                 {item.title}
               </a>
               <br />
-              <small style={{ color: '#666' }}>{item.snippet}</small>
+              <small style={{ color: '#aaa' }}>{item.snippet}</small>
             </li>
           ))}
         </ul>
