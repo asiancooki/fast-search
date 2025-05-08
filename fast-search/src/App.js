@@ -9,7 +9,7 @@ function App() {
   const handleSearch = async () => {
     setLoading(true);
     try {
-      const res = await fetch('https://fastsearch-s869.onrender.com/', {
+      const res = await fetch('https://fastsearch-s869.onrender.com/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, website }),
