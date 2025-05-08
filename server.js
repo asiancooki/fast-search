@@ -58,8 +58,8 @@ app.post('/search', async (req, res) => {
         try {
             const profileResponse = await axios.get(profileUrl);
     
-            if (profileResponse.data.includes("Sorry, this page isn't available")) {
-                console.log(`Instagram username ${username} not found, fallback to Exa search.`);
+            if (!profileResponse.data.includes('property="og:title"')) {
+                console.log(`Instagram username ${username} not found (missing og:title), fallback to Exa search.`);
                 // continue to Exa API fallback
             } else {
                 // ✅ Profile exists
@@ -70,7 +70,7 @@ app.post('/search', async (req, res) => {
                         snippet: `Direct profile found for @${username}`
                     }]
                 });
-            }
+            }            
         } catch (err) {
             console.error('Error checking Instagram profile:', err.message);
             // optionally continue to fallback too
