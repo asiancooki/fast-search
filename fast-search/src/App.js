@@ -20,7 +20,7 @@ function App() {
   const [splashGone, setSplashGone] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setSplashGone(true), 500); // shortened splash duration
+    const timer = setTimeout(() => setSplashGone(true), 500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -63,15 +63,15 @@ function App() {
         justifyContent: 'center',
         alignItems: 'center',
         transform: splashGone ? 'translateY(-100%)' : 'translateY(0)',
-        transition: 'transform 0.5s ease' // almost instant
+        transition: 'transform 0.5s ease'
       }}>
         <div style={{ position: 'relative', textAlign: 'center' }}>
-          <h1 style={{ fontSize: '60px', margin: 0 }}>FastSearch</h1>
+          <h1 style={{ fontSize: 'clamp(32px, 8vw, 60px)', margin: 0 }}>FastSearch</h1>
           <p style={{
             position: 'absolute',
-            bottom: '-18px',
+            bottom: '-clamp(10px, 2vw, 18px)',
             right: '0',
-            fontSize: '14px',
+            fontSize: 'clamp(10px, 2vw, 14px)',
             color: '#aaa',
             margin: 0
           }}>by Yau Chau</p>
@@ -81,29 +81,33 @@ function App() {
       {/* HEADER */}
       <div style={{
         position: 'absolute',
-        top: '20px',
+        top: 'clamp(10px, 3vh, 20px)',
         left: '50%',
         transform: 'translateX(-50%)',
         textAlign: 'center'
       }}>
         <div style={{ position: 'relative', display: 'inline-block' }}>
-          <h1 style={{ fontSize: '48px', margin: 0, letterSpacing: '1px' }}>FastSearch</h1>
+          <h1 style={{
+            fontSize: 'clamp(28px, 6vw, 48px)',
+            margin: 0,
+            letterSpacing: '1px'
+          }}>FastSearch</h1>
           <p style={{
             position: 'absolute',
-            bottom: '-14px',
+            bottom: '-clamp(8px, 1.5vw, 14px)',
             right: '0',
-            fontSize: '12px',
+            fontSize: 'clamp(10px, 2vw, 12px)',
             color: '#aaa',
             margin: 0
           }}>by Yau Chau</p>
         </div>
         <p style={{
-          fontSize: '26px',              // bigger font
-          marginTop: '50px',             // further down
+          fontSize: 'clamp(16px, 4vw, 26px)',
+          marginTop: 'clamp(30px, 8vh, 50px)',
           background: 'linear-gradient(90deg, #66a6ff, #89f7fe)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          fontWeight: '600',
+          fontWeight: '600'
         }}>
           Find your results fast, anywhere.
         </p>
@@ -116,8 +120,8 @@ function App() {
         right: '20px',
       }}>
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" style={{
-          width: '30px',
-          height: '30px',
+          width: 'clamp(24px, 5vw, 30px)',
+          height: 'clamp(24px, 5vw, 30px)',
           filter: 'invert(0.7)',
           transition: 'transform 0.2s',
         }}
@@ -128,22 +132,24 @@ function App() {
       {/* MAIN SEARCH CONTAINER */}
       <div style={{
         background: 'rgba(20, 20, 20, 0.85)',
-        padding: '40px',
+        padding: 'clamp(20px, 5vw, 40px)',
         borderRadius: '20px',
         boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
         width: '90%',
         maxWidth: '460px',
         textAlign: 'center',
-        marginTop: '100px'
+        marginTop: 'clamp(60px, 10vh, 100px)'
       }}>
-        <h2 style={{ marginBottom: '20px' }}>Search <span style={{ color: '#66a6ff' }}>{website}</span></h2>
+        <h2 style={{ fontSize: 'clamp(20px, 4vw, 28px)', marginBottom: 'clamp(12px, 3vw, 20px)' }}>
+          Search <span style={{ color: '#66a6ff' }}>{website}</span>
+        </h2>
 
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'center',
           gap: '12px',
-          marginBottom: '20px'
+          marginBottom: 'clamp(12px, 3vw, 20px)'
         }}>
           {platforms.map(platform => (
             <div
@@ -155,8 +161,8 @@ function App() {
                 borderRadius: '50%',
                 background: website === platform.name ? '#66a6ff' : '#222',
                 boxShadow: website === platform.name ? '0 0 15px #66a6ff' : '0 2px 8px rgba(0,0,0,0.5)',
-                width: '50px',
-                height: '50px',
+                width: 'clamp(40px, 10vw, 50px)',
+                height: 'clamp(40px, 10vw, 50px)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -167,8 +173,8 @@ function App() {
             >
               <img src={platform.icon} alt={platform.name} style={{
                 filter: website === platform.name ? 'invert(1)' : 'invert(0.7)',
-                width: '28px',
-                height: '28px'
+                width: 'clamp(20px, 5vw, 28px)',
+                height: 'clamp(20px, 5vw, 28px)'
               }} />
             </div>
           ))}
@@ -181,13 +187,13 @@ function App() {
           onChange={e => setQuery(e.target.value)}
           style={{
             width: '100%',
-            padding: '12px',
+            padding: 'clamp(10px, 3vw, 12px)',
             margin: '10px 0',
             border: 'none',
             borderRadius: '10px',
             background: '#333',
             color: '#fff',
-            fontSize: '16px'
+            fontSize: 'clamp(14px, 4vw, 16px)'
           }}
         />
 
@@ -196,13 +202,13 @@ function App() {
           disabled={loading}
           style={{
             width: '100%',
-            padding: '12px',
+            padding: 'clamp(10px, 3vw, 12px)',
             margin: '10px 0',
             border: 'none',
             borderRadius: '10px',
             background: loading ? '#555' : '#66a6ff',
             color: '#fff',
-            fontSize: '16px',
+            fontSize: 'clamp(14px, 4vw, 16px)',
             cursor: 'pointer',
             transition: 'background 0.3s'
           }}>
@@ -210,7 +216,7 @@ function App() {
         </button>
 
         {results.length > 0 && (
-          <h3 style={{ fontSize: '18px', margin: '20px 0 10px', color: '#ccc' }}>Top 5 Results</h3>
+          <h3 style={{ fontSize: 'clamp(14px, 3vw, 18px)', margin: 'clamp(12px, 3vw, 20px) 0 10px', color: '#ccc' }}>Top 5 Results</h3>
         )}
 
         {results.length === 0 && !loading && <p style={{ color: '#ccc' }}>No results yet.</p>}
