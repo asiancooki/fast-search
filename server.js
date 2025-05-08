@@ -25,6 +25,32 @@ app.post('/search', async (req, res) => {
             break;
         case 'Instagram':
             domain = 'https://instagram.com';
+
+            // ALSO check direct username profile
+            const username = query.replace(/\s+/g, '').toLowerCase(); // sanitize input
+            const profileUrl = `https://www.instagram.com/${username}/`;
+
+            try {
+                const profileResponse = await axios.get(profileUrl);
+
+                if (profileResponse.status === 200) {
+                    // Profile exists → return profile URL directly
+                    return res.json({
+                        results: [{
+                            url: profileUrl,
+                            title: `Instagram profile: ${username}`,
+                            snippet: `Direct profile found for @${username}`
+                        }]
+                    });
+                }
+            } catch (err) {
+                if (err.response && err.response.status === 404) {
+                    // Profile not found → continue to Exa API fallback
+                    console.log(`Instagram username ${username} not found, fallback to Exa search.`);
+                } else {
+                    console.error('Error checking Instagram profile:', err.message);
+                }
+            }
             break;
         case 'Facebook':
             domain = 'https://facebook.com';
