@@ -20,7 +20,7 @@ function App() {
   const [splashGone, setSplashGone] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setSplashGone(true), 2500);
+    const timer = setTimeout(() => setSplashGone(true), 1500); // shortened splash duration
     return () => clearTimeout(timer);
   }, []);
 
@@ -63,7 +63,7 @@ function App() {
         justifyContent: 'center',
         alignItems: 'center',
         transform: splashGone ? 'translateY(-100%)' : 'translateY(0)',
-        transition: 'transform 0.5s ease'
+        transition: 'transform 0.05s ease' // almost instant
       }}>
         <div style={{ position: 'relative', textAlign: 'center' }}>
           <h1 style={{ fontSize: '60px', margin: 0 }}>FastSearch</h1>
@@ -98,13 +98,15 @@ function App() {
           }}>by Yau Chau</p>
         </div>
         <p style={{
-          fontSize: '22px',
-          marginTop: '30px',
+          fontSize: '26px',              // bigger font
+          marginTop: '50px',             // further down
           background: 'linear-gradient(90deg, #66a6ff, #89f7fe)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           fontWeight: '600',
-        }}>Find your results fast, anywhere.</p>
+        }}>
+          Find your results fast, anywhere.
+        </p>
       </div>
 
       {/* LINKEDIN ICON */}
@@ -120,7 +122,7 @@ function App() {
           transition: 'transform 0.2s',
         }}
           onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}/>
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
       </a>
 
       {/* MAIN SEARCH CONTAINER */}
