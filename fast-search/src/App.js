@@ -9,7 +9,7 @@ function App() {
   const handleSearch = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/search', {
+      const res = await fetch('https://fast-search-backend.onrender.com/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, website }),
