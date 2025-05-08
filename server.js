@@ -58,22 +58,22 @@ app.post('/search', async (req, res) => {
         try {
             const profileResponse = await axios.get(profileUrl);
     
-            const ogTitleMatch = /<meta property=["']og:title["'] content=["'](.*?)["']/.exec(profileResponse.data);
+            const descriptionMatch = /<meta property=["']og:description["'] content=["'](.*?)["']/.exec(profileResponse.data);
 
-            if (ogTitleMatch && ogTitleMatch[1]) {
-                const title = ogTitleMatch[1];
+        if (descriptionMatch && descriptionMatch[1] && descriptionMatch[1].match(/\d+\s*Followers/)) {
+            const description = descriptionMatch[1];
+            return res.json({
+                results: [{
+                    url: profileUrl,
+                    title: `Instagram profile: ${username}`,
+                    snippet: description
+                }]
+            });
+        } else {
+            console.log(`Instagram username ${username} not found (missing follower count), fallback to Exa search.`);
+            // → will continue to Exa fallback
+        }
 
-                return res.json({
-                    results: [{
-                        url: profileUrl,
-                        title: title,
-                        snippet: `Direct profile found for @${username}`
-                    }]
-                });
-            } else {
-                console.log(`Instagram username ${username} not found (missing og:title), fallback to Exa search.`);
-                // → will continue to Exa fallback
-            }
           
         } catch (err) {
             console.error('Error checking Instagram profile:', err.message);
