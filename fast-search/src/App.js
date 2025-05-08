@@ -18,10 +18,14 @@ function App() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [animate, setAnimate] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
 
   useEffect(() => {
-    // Trigger animation when page loads
+    // Animation for main container
     setTimeout(() => setAnimate(true), 100);
+    // Overlay disappears after 2 seconds
+    const timer = setTimeout(() => setShowOverlay(false), 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSearch = async () => {
@@ -53,6 +57,25 @@ function App() {
       position: 'relative',
       overflow: 'hidden'
     }}>
+      {/* FULLSCREEN OVERLAY */}
+      {showOverlay && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: '#111',
+          zIndex: 9999,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          transition: 'opacity 1s',
+          opacity: showOverlay ? 1 : 0
+        }}>
+          <h1 style={{ fontSize: '60px', margin: 0, letterSpacing: '2px' }}>FastSearch</h1>
+          <p style={{ fontSize: '16px', color: '#aaa', marginTop: '10px' }}>by Yau Chau</p>
+        </div>
+      )}
+
       {/* HEADER */}
       <div style={{
         position: 'absolute',
