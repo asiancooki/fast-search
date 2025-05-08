@@ -45,13 +45,14 @@ function App() {
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #141e30, #243b55)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
       fontFamily: "'Poppins', sans-serif",
       color: '#fff',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
       position: 'relative',
-      overflow: 'hidden'
+      padding: 'clamp(20px, 5vh, 40px)'
     }}>
       {/* SPLASH SCREEN */}
       <div style={{
@@ -78,20 +79,13 @@ function App() {
         </div>
       </div>
 
-      {/* HEADER */}
+      {/* HEADER + MOTTO */}
       <div style={{
-        position: 'absolute',
-        top: 'clamp(10px, 3vh, 20px)',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        textAlign: 'center'
+        textAlign: 'center',
+        marginBottom: 'clamp(20px, 5vh, 40px)',
       }}>
         <div style={{ position: 'relative', display: 'inline-block' }}>
-          <h1 style={{
-            fontSize: 'clamp(28px, 6vw, 48px)',
-            margin: 0,
-            letterSpacing: '1px'
-          }}>FastSearch</h1>
+          <h1 style={{ fontSize: 'clamp(28px, 6vw, 48px)', margin: 0, letterSpacing: '1px' }}>FastSearch</h1>
           <p style={{
             position: 'absolute',
             bottom: '-clamp(8px, 1.5vw, 14px)',
@@ -103,7 +97,7 @@ function App() {
         </div>
         <p style={{
           fontSize: 'clamp(16px, 4vw, 26px)',
-          marginTop: 'clamp(30px, 8vh, 50px)',
+          marginTop: 'clamp(20px, 5vh, 50px)',
           background: 'linear-gradient(90deg, #66a6ff, #89f7fe)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
@@ -113,32 +107,15 @@ function App() {
         </p>
       </div>
 
-      {/* LINKEDIN ICON */}
-      <a href="https://www.linkedin.com/in/yauchau/" target="_blank" rel="noopener noreferrer" style={{
-        position: 'absolute',
-        bottom: '20px',
-        right: '20px',
-      }}>
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" style={{
-          width: 'clamp(24px, 5vw, 30px)',
-          height: 'clamp(24px, 5vw, 30px)',
-          filter: 'invert(0.7)',
-          transition: 'transform 0.2s',
-        }}
-          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
-      </a>
-
-      {/* MAIN SEARCH CONTAINER */}
+      {/* SEARCH CONTAINER */}
       <div style={{
         background: 'rgba(20, 20, 20, 0.85)',
         padding: 'clamp(20px, 5vw, 40px)',
         borderRadius: '20px',
         boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
-        width: '90%',
+        width: '100%',
         maxWidth: '460px',
-        textAlign: 'center',
-        marginTop: 'clamp(60px, 10vh, 100px)'
+        textAlign: 'center'
       }}>
         <h2 style={{ fontSize: 'clamp(20px, 4vw, 28px)', marginBottom: 'clamp(12px, 3vw, 20px)' }}>
           Search <span style={{ color: '#66a6ff' }}>{website}</span>
@@ -240,6 +217,22 @@ function App() {
           ))}
         </ul>
       </div>
+
+      {/* LINKEDIN ICON */}
+      <a href="https://www.linkedin.com/in/yauchau/" target="_blank" rel="noopener noreferrer" style={{
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+      }}>
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" style={{
+          width: 'clamp(24px, 5vw, 30px)',
+          height: 'clamp(24px, 5vw, 30px)',
+          filter: 'invert(0.7)',
+          transition: 'transform 0.2s',
+        }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
+      </a>
     </div>
   );
 }
