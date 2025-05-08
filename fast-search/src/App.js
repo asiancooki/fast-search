@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function App() {
   const platforms = [
@@ -17,6 +17,12 @@ function App() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    // Trigger animation when page loads
+    setTimeout(() => setAnimate(true), 100);
+  }, []);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -44,17 +50,53 @@ function App() {
       alignItems: 'center',
       fontFamily: "'Poppins', sans-serif",
       color: '#fff',
+      position: 'relative',
+      overflow: 'hidden'
     }}>
+      {/* HEADER */}
+      <div style={{
+        position: 'absolute',
+        top: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        textAlign: 'center'
+      }}>
+        <h1 style={{ fontSize: '48px', margin: 0, letterSpacing: '1px' }}>FastSearch</h1>
+        <p style={{ fontSize: '14px', color: '#aaa', marginTop: '4px', textAlign: 'right' }}>by Yau Chau</p>
+      </div>
+
+      {/* LINKEDIN ICON BOTTOM RIGHT */}
+      <a href="https://www.linkedin.com/in/yauchau/" target="_blank" rel="noopener noreferrer" style={{
+        position: 'absolute',
+        bottom: '20px',
+        right: '20px',
+      }}>
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" style={{
+          width: '30px',
+          height: '30px',
+          filter: 'invert(0.7)',
+          transition: 'transform 0.2s',
+        }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        />
+      </a>
+
+      {/* MAIN CONTAINER */}
       <div style={{
         background: 'rgba(20, 20, 20, 0.85)',
         padding: '40px',
         borderRadius: '20px',
         boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
         width: '90%',
-        maxWidth: '420px',
-        textAlign: 'center'
+        maxWidth: '460px',
+        textAlign: 'center',
+        marginTop: '100px',
+        opacity: animate ? 1 : 0,
+        transform: animate ? 'translateY(0)' : 'translateY(-40px)',
+        transition: 'opacity 0.8s ease, transform 0.8s ease'
       }}>
-        <h1 style={{ marginBottom: '20px' }}>Search <span style={{ color: '#66a6ff' }}>{website}</span></h1>
+        <h2 style={{ marginBottom: '20px' }}>Search <span style={{ color: '#66a6ff' }}>{website}</span></h2>
 
         {/* ICONS */}
         <div style={{
@@ -128,7 +170,9 @@ function App() {
           {loading ? 'Searching...' : 'Search'}
         </button>
 
-        <h2 style={{ fontSize: '18px', margin: '20px 0 10px' }}>Results:</h2>
+        {results.length > 0 && (
+          <h3 style={{ fontSize: '18px', margin: '20px 0 10px', color: '#ccc' }}>Top 5 Results</h3>
+        )}
 
         {results.length === 0 && !loading && <p style={{ color: '#ccc' }}>No results yet.</p>}
 
@@ -138,7 +182,7 @@ function App() {
               background: '#2a2a2a',
               padding: '10px',
               borderRadius: '10px',
-              marginBottom: '10px',
+              marginBottom: '15px',
               textAlign: 'left',
               boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
             }}>
