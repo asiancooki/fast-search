@@ -55,36 +55,38 @@ app.post('/search', async (req, res) => {
         const username = query.replace(/\s+/g, '').toLowerCase();
         const profileUrl = `https://www.instagram.com/${username}/`;
     
+        const puppeteer = require('puppeteer');
+    
         try {
-            const profileResponse = await axios.get(profileUrl);
-            console.log('Response HTML:', profileResponse.data.substring(0, 500)); // only print first 500 chars
-            const ogTypeMatch = /<meta property=["']og:type["'] content=["']profile["']/.exec(profileResponse.data);
-
-            if (ogTypeMatch) {
-                const titleMatch = /<meta property=["']og:title["'] content=["'](.*?)["']/.exec(profileResponse.data);
-                const descriptionMatch = /<meta property=["']og:description["'] content=["'](.*?)["']/.exec(profileResponse.data);
-                const title = titleMatch ? titleMatch[1] : `Instagram profile: ${username}`;
-                const description = descriptionMatch ? descriptionMatch[1] : `Direct profile found for @${username}`;
-
+            const browser = await puppeteer.launch({ headless: 'new' });
+            const page = await browser.newPage();
+    
+            await page.goto(profileUrl, { waitUntil: 'domcontentloaded' });
+    
+            // Extract meta title and description
+            const title = await page.$eval('meta[property="og:title"]', el => el.content).catch(() => null);
+            const description = await page.$eval('meta[property="og:description"]', el => el.content).catch(() => null);
+    
+            await browser.close();
+    
+            if (title) {
                 return res.json({
                     results: [{
                         url: profileUrl,
                         title: title,
-                        snippet: description
+                        snippet: description || `Instagram profile for @${username}`
                     }]
                 });
             } else {
-                console.log(`Instagram username ${username} not found (missing og:type=profile), fallback to Exa search.`);
-                // → will continue to Exa fallback
+                console.log(`Instagram username ${username} not found (missing og:title), fallback to Exa search.`);
+                // fallback to Exa API below
             }
-
-
-          
         } catch (err) {
-            console.error('Error checking Instagram profile:', err.message);
-            // optionally continue to fallback too
+            console.error('Error checking Instagram profile with Puppeteer:', err.message);
+            // fallback to Exa API below
         }
     }
+    
     
 
     try {
