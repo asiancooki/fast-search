@@ -58,21 +58,21 @@ app.post('/search', async (req, res) => {
         try {
             const profileResponse = await axios.get(profileUrl);
     
-            const profileExists = profileResponse.data.includes('property="og:title"') ||
-                      profileResponse.data.includes('application/ld+json');
+            const ogTitleMatch = /<meta property=["']og:title["'] content=["'](.*?)["']/.exec(profileResponse.data);
 
-            if (profileExists) {
-                // ✅ Profile exists
+            if (ogTitleMatch && ogTitleMatch[1]) {
+                const title = ogTitleMatch[1];
+
                 return res.json({
                     results: [{
                         url: profileUrl,
-                        title: `Instagram profile: ${username}`,
+                        title: title,
                         snippet: `Direct profile found for @${username}`
                     }]
                 });
             } else {
-                console.log(`Instagram username ${username} not found (missing profile markers), fallback to Exa search.`);
-                // continue to Exa API fallback
+                console.log(`Instagram username ${username} not found (missing og:title), fallback to Exa search.`);
+                // → will continue to Exa fallback
             }
           
         } catch (err) {
