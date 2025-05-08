@@ -20,7 +20,7 @@ function App() {
   const [splashGone, setSplashGone] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setSplashGone(true), 1500); // shortened splash duration
+    const timer = setTimeout(() => setSplashGone(true), 500); // shortened splash duration
     return () => clearTimeout(timer);
   }, []);
 
@@ -63,7 +63,7 @@ function App() {
         justifyContent: 'center',
         alignItems: 'center',
         transform: splashGone ? 'translateY(-100%)' : 'translateY(0)',
-        transition: 'transform 0.05s ease' // almost instant
+        transition: 'transform 0.5s ease' // almost instant
       }}>
         <div style={{ position: 'relative', textAlign: 'center' }}>
           <h1 style={{ fontSize: '60px', margin: 0 }}>FastSearch</h1>
