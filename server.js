@@ -25,32 +25,6 @@ app.post('/search', async (req, res) => {
             break;
         case 'Instagram':
             domain = 'https://instagram.com';
-
-            // ALSO check direct username profile
-            const username = query.replace(/\s+/g, '').toLowerCase(); // sanitize input
-            const profileUrl = `https://www.instagram.com/${username}/`;
-
-            try {
-                const profileResponse = await axios.get(profileUrl);
-
-                if (profileResponse.status === 200) {
-                    // Profile exists → return profile URL directly
-                    return res.json({
-                        results: [{
-                            url: profileUrl,
-                            title: `Instagram profile: ${username}`,
-                            snippet: `Direct profile found for @${username}`
-                        }]
-                    });
-                }
-            } catch (err) {
-                if (err.response && err.response.status === 404) {
-                    // Profile not found → continue to Exa API fallback
-                    console.log(`Instagram username ${username} not found, fallback to Exa search.`);
-                } else {
-                    console.error('Error checking Instagram profile:', err.message);
-                }
-            }
             break;
         case 'Facebook':
             domain = 'https://facebook.com';
@@ -76,6 +50,33 @@ app.post('/search', async (req, res) => {
         default:
             return res.status(400).json({ error: 'Invalid website' });
     }
+
+    if (website === 'Instagram') {
+        const username = query.replace(/\s+/g, '').toLowerCase();
+        const profileUrl = `https://www.instagram.com/${username}/`;
+    
+        try {
+            const profileResponse = await axios.get(profileUrl);
+    
+            if (profileResponse.data.includes("Sorry, this page isn't available")) {
+                console.log(`Instagram username ${username} not found, fallback to Exa search.`);
+                // continue to Exa API fallback
+            } else {
+                // ✅ Profile exists
+                return res.json({
+                    results: [{
+                        url: profileUrl,
+                        title: `Instagram profile: ${username}`,
+                        snippet: `Direct profile found for @${username}`
+                    }]
+                });
+            }
+        } catch (err) {
+            console.error('Error checking Instagram profile:', err.message);
+            // optionally continue to fallback too
+        }
+    }
+    
 
     try {
         const response = await axios.post('https://api.exa.ai/search', {
