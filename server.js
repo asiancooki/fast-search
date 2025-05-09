@@ -3,6 +3,7 @@ console.log('Starting server.js...');
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
@@ -13,7 +14,7 @@ app.get('/', (req, res) => {
 });
 
 
-const EXA_API_KEY = 'ed7fa3f5-9f6a-4071-91cb-e7e22de72de6';
+const EXA_API_KEY = process.env.EXA_API_KEY;
 
 app.post('/search', async (req, res) => {
     const { query, website } = req.body;
