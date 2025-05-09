@@ -17,6 +17,9 @@ function App() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [splashGone, setSplashGone] = useState(false);
+  const [searchHistory, setSearchHistory] = useState(() => JSON.parse(localStorage.getItem('searchHistory')) || []);
+  const [darkMode, setDarkMode] = useState(true);
+  const [suggestion, setSuggestion] = useState('');
 
   useEffect(() => {
     const timer = setTimeout(() => setSplashGone(true), 500);
@@ -24,7 +27,11 @@ function App() {
   }, []);
 
   const handleSearch = async () => {
+    if (!query.trim()) return;
     setLoading(true);
+    setResults([]);
+    setSuggestion('');
+
     try {
       const res = await fetch('https://fastsearch-s869.onrender.com/search', {
         method: 'POST',
@@ -32,7 +39,17 @@ function App() {
         body: JSON.stringify({ query, website }),
       });
       const data = await res.json();
-      setResults(data.results || []);
+
+      if (!data.results || data.results.length === 0) {
+        setSuggestion(`No results for "${query}". Try another keyword.`);
+      } else {
+        setResults(data.results);
+      }
+
+      const updatedHistory = [query, ...searchHistory.filter(q => q !== query)].slice(0, 5);
+      setSearchHistory(updatedHistory);
+      localStorage.setItem('searchHistory', JSON.stringify(updatedHistory));
+
     } catch (err) {
       console.error(err);
       alert('Error fetching results');
@@ -40,18 +57,25 @@ function App() {
     setLoading(false);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') handleSearch();
+  };
+
+  const toggleDarkMode = () => setDarkMode(!darkMode);
+
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #141e30, #243b55)',
+      background: darkMode ? 'linear-gradient(135deg, #141e30, #243b55)' : '#f0f0f0',
+      color: darkMode ? '#fff' : '#222',
       fontFamily: "'Poppins', sans-serif",
-      color: '#fff',
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       position: 'relative',
-      padding: 'clamp(20px, 5vh, 40px)'
+      padding: 'clamp(20px, 5vh, 40px)',
+      transition: 'background 0.4s, color 0.4s'
     }}>
       {/* SPLASH SCREEN */}
       <div style={{
@@ -78,13 +102,13 @@ function App() {
         </div>
       </div>
 
-      {/* HEADER + MOTTO */}
+      {/* HEADER + MOTTO + DARK MODE */}
       <div style={{
         textAlign: 'center',
-        marginBottom: 'clamp(20px, 5vh, 40px)',
+        marginBottom: 'clamp(20px, 5vh, 40px)'
       }}>
         <div style={{ position: 'relative', display: 'inline-block' }}>
-          <h1 style={{ fontSize: 'clamp(28px, 6vw, 48px)', margin: 0, letterSpacing: '1px' }}>FastSearch</h1>
+          <h1 style={{ fontSize: 'clamp(28px, 6vw, 48px)', margin: 0 }}>FastSearch</h1>
           <p style={{
             position: 'absolute',
             bottom: '-clamp(8px, 1.5vw, 14px)',
@@ -104,11 +128,23 @@ function App() {
         }}>
           Find your results fast, anywhere.
         </p>
+        <button onClick={toggleDarkMode} style={{
+          padding: '8px 16px',
+          borderRadius: '8px',
+          marginTop: '10px',
+          background: darkMode ? '#333' : '#ddd',
+          color: darkMode ? '#fff' : '#222',
+          border: 'none',
+          cursor: 'pointer'
+        }}>
+          {darkMode ? 'Light Mode' : 'Dark Mode'}
+        </button>
       </div>
 
-      {/* MAIN SEARCH CONTAINER */}
+      {/* SEARCH BOX */}
       <div style={{
-        background: 'rgba(20, 20, 20, 0.85)',
+        background: darkMode ? 'rgba(20, 20, 20, 0.85)' : '#fff',
+        color: darkMode ? '#fff' : '#222',
         padding: '40px',
         borderRadius: '20px',
         boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
@@ -116,30 +152,22 @@ function App() {
         maxWidth: '460px',
         textAlign: 'center',
         boxSizing: 'border-box',
-        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
       }}>
-        <h2 style={{
-          marginBottom: '20px',
-          fontSize: 'clamp(20px, 4vw, 28px)'
-        }}>
-          Search <span style={{ color: '#66a6ff' }}>{website}</span>
-        </h2>
+        <h2>Search <span style={{ color: '#66a6ff' }}>{website}</span></h2>
 
+        {/* Platforms */}
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'center',
           gap: '12px',
-          marginBottom: '20px',
-          width: '100%',
-          boxSizing: 'border-box'
+          marginBottom: '20px'
         }}>
           {platforms.map(platform => (
-            <div
-              key={platform.name}
+            <div key={platform.name}
               onClick={() => setWebsite(platform.name)}
               style={{
                 cursor: 'pointer',
@@ -152,7 +180,7 @@ function App() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'transform 0.2s, box-shadow 0.2s',
+                transition: 'transform 0.2s, box-shadow 0.2s'
               }}
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
@@ -166,23 +194,35 @@ function App() {
           ))}
         </div>
 
+        {/* Search History */}
+        {searchHistory.length > 0 && (
+          <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '10px' }}>
+            Recent: {searchHistory.map((q, idx) => (
+              <span key={idx}
+                onClick={() => { setQuery(q); handleSearch(); }}
+                style={{ cursor: 'pointer', marginRight: '8px', textDecoration: 'underline' }}>
+                {q}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Input */}
         <input
           type="text"
           placeholder="Enter search query"
           value={query}
           onChange={e => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
           style={{
             width: '100%',
-            maxWidth: '100%',
-            boxSizing: 'border-box',
             padding: '12px',
-            margin: '10px 0',
-            border: 'none',
             borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
+            border: 'none',
+            background: darkMode ? '#333' : '#eee',
+            color: darkMode ? '#fff' : '#222',
             fontSize: '16px',
-            display: 'block'
+            marginBottom: '12px'
           }}
         />
 
@@ -191,73 +231,62 @@ function App() {
           disabled={loading}
           style={{
             width: '100%',
-            maxWidth: '100%',
-            boxSizing: 'border-box',
             padding: '12px',
-            margin: '10px 0',
-            border: 'none',
             borderRadius: '10px',
             background: loading ? '#555' : '#66a6ff',
             color: '#fff',
             fontSize: '16px',
-            cursor: 'pointer',
-            transition: 'background 0.3s',
-            display: 'block'
+            border: 'none',
+            cursor: 'pointer'
           }}>
           {loading ? 'Searching...' : 'Search'}
         </button>
 
-        {results.length > 0 && (
-          <h3 style={{ fontSize: '18px', margin: '20px 0 10px', color: '#ccc' }}>Top 5 Results</h3>
-        )}
+        {loading && <p style={{ fontSize: '12px', marginTop: '10px' }}>Loading results...</p>}
+        {suggestion && <p style={{ color: 'orange', fontSize: '14px', marginTop: '10px' }}>{suggestion}</p>}
 
-        {results.length === 0 && !loading && <p style={{ color: '#ccc' }}>No results yet.</p>}
-
-        <ul style={{
-          listStyle: 'none',
-          padding: 0,
-          margin: 0,
-          width: '100%',
-          boxSizing: 'border-box'
-        }}>
+        <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0 0', width: '100%' }}>
           {results.map((item, idx) => (
             <li key={idx} style={{
-              background: '#2a2a2a',
+              background: darkMode ? '#2a2a2a' : '#eee',
               padding: '10px',
               borderRadius: '10px',
-              marginBottom: '15px',
-              textAlign: 'left',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
-              wordBreak: 'break-word'
+              marginBottom: '10px',
+              textAlign: 'left'
             }}>
               <a href={item.url} target="_blank" rel="noopener noreferrer" style={{
-                fontWeight: '600',
-                color: '#66a6ff',
-                textDecoration: 'none'
+                color: '#66a6ff', fontWeight: '600'
               }}>
                 {item.title}
               </a>
+              <button onClick={() => navigator.clipboard.writeText(item.url)} style={{
+                float: 'right',
+                fontSize: '12px',
+                background: 'transparent',
+                border: 'none',
+                color: '#aaa',
+                cursor: 'pointer'
+              }}>Copy Link</button>
               <br />
-              <small style={{ color: '#aaa' }}>{item.snippet}</small>
+              <small style={{ color: darkMode ? '#aaa' : '#555' }}>{item.snippet}</small>
             </li>
           ))}
         </ul>
       </div>
 
-      {/* LINKEDIN ICON */}
+      {/* LINKEDIN */}
       <a href="https://www.linkedin.com/in/yauchau/" target="_blank" rel="noopener noreferrer" style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
+        position: 'fixed', bottom: '20px', right: '20px'
       }}>
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" style={{
           width: 'clamp(24px, 5vw, 30px)',
           height: 'clamp(24px, 5vw, 30px)',
           filter: 'invert(0.7)',
-          transition: 'transform 0.2s',
+          transition: 'transform 0.2s'
         }}
           onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        />
       </a>
     </div>
   );
