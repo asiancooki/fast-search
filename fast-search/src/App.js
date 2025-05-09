@@ -293,6 +293,19 @@ function App() {
           onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
           onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
       </a>
+
+        {/* POWERED BY EXA */}
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '20px',
+          fontSize: '10px',
+          color: darkMode ? '#aaa' : '#555',
+          opacity: 0.7
+      }}>
+        Powered by Exa
+      </div>
+
     </div>
   );
 }
