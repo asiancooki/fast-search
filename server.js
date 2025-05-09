@@ -29,9 +29,6 @@ app.post('/search', async (req, res) => {
         case 'Facebook':
             domain = 'https://facebook.com';
             break;
-        case 'X':
-            domain = 'https://x.com';
-            break;
         case 'LinkedIn':
             domain = 'https://linkedin.com';
             break;
