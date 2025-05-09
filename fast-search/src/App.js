@@ -107,17 +107,25 @@ function App() {
         </p>
       </div>
 
-      {/* SEARCH CONTAINER */}
+      {/* MAIN SEARCH CONTAINER */}
       <div style={{
         background: 'rgba(20, 20, 20, 0.85)',
-        padding: 'clamp(20px, 5vw, 40px)',
+        padding: '40px',
         borderRadius: '20px',
         boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
-        width: '100%',
+        width: '90%',
         maxWidth: '460px',
-        textAlign: 'center'
+        textAlign: 'center',
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
       }}>
-        <h2 style={{ fontSize: 'clamp(20px, 4vw, 28px)', marginBottom: 'clamp(12px, 3vw, 20px)' }}>
+        <h2 style={{
+          marginBottom: '20px',
+          fontSize: 'clamp(20px, 4vw, 28px)'
+        }}>
           Search <span style={{ color: '#66a6ff' }}>{website}</span>
         </h2>
 
@@ -126,7 +134,9 @@ function App() {
           flexWrap: 'wrap',
           justifyContent: 'center',
           gap: '12px',
-          marginBottom: 'clamp(12px, 3vw, 20px)'
+          marginBottom: '20px',
+          width: '100%',
+          boxSizing: 'border-box'
         }}>
           {platforms.map(platform => (
             <div
@@ -164,13 +174,16 @@ function App() {
           onChange={e => setQuery(e.target.value)}
           style={{
             width: '100%',
-            padding: 'clamp(10px, 3vw, 12px)',
+            maxWidth: '100%',
+            boxSizing: 'border-box',
+            padding: '12px',
             margin: '10px 0',
             border: 'none',
             borderRadius: '10px',
             background: '#333',
             color: '#fff',
-            fontSize: 'clamp(14px, 4vw, 16px)'
+            fontSize: '16px',
+            display: 'block'
           }}
         />
 
@@ -179,26 +192,35 @@ function App() {
           disabled={loading}
           style={{
             width: '100%',
-            padding: 'clamp(10px, 3vw, 12px)',
+            maxWidth: '100%',
+            boxSizing: 'border-box',
+            padding: '12px',
             margin: '10px 0',
             border: 'none',
             borderRadius: '10px',
             background: loading ? '#555' : '#66a6ff',
             color: '#fff',
-            fontSize: 'clamp(14px, 4vw, 16px)',
+            fontSize: '16px',
             cursor: 'pointer',
-            transition: 'background 0.3s'
+            transition: 'background 0.3s',
+            display: 'block'
           }}>
           {loading ? 'Searching...' : 'Search'}
         </button>
 
         {results.length > 0 && (
-          <h3 style={{ fontSize: 'clamp(14px, 3vw, 18px)', margin: 'clamp(12px, 3vw, 20px) 0 10px', color: '#ccc' }}>Top 5 Results</h3>
+          <h3 style={{ fontSize: '18px', margin: '20px 0 10px', color: '#ccc' }}>Top 5 Results</h3>
         )}
 
         {results.length === 0 && !loading && <p style={{ color: '#ccc' }}>No results yet.</p>}
 
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+        <ul style={{
+          listStyle: 'none',
+          padding: 0,
+          margin: 0,
+          width: '100%',
+          boxSizing: 'border-box'
+        }}>
           {results.map((item, idx) => (
             <li key={idx} style={{
               background: '#2a2a2a',
@@ -206,9 +228,14 @@ function App() {
               borderRadius: '10px',
               marginBottom: '15px',
               textAlign: 'left',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
+              boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
+              wordBreak: 'break-word'
             }}>
-              <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: '600', color: '#66a6ff', textDecoration: 'none' }}>
+              <a href={item.url} target="_blank" rel="noopener noreferrer" style={{
+                fontWeight: '600',
+                color: '#66a6ff',
+                textDecoration: 'none'
+              }}>
                 {item.title}
               </a>
               <br />
