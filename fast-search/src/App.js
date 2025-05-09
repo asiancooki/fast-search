@@ -118,9 +118,10 @@ function App() {
       padding: 'clamp(20px, 5vh, 40px)',
       transition: 'background 0.4s, color 0.4s'
     }}>
-      {/* Splash screen remains unchanged */}
+      {/* SPLASH SCREEN */}
       <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+        position: 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
         background: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)',
         zIndex: 10,
         display: 'flex',
@@ -197,18 +198,6 @@ function App() {
           ))}
         </div>
 
-        {/* Search History */}
-        {searchHistory.length > 0 && (
-          <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '10px' }}>
-            Recent: {searchHistory.map((q, idx) => (
-              <span key={idx} onClick={() => { setQuery(q); handleSearch(); }}
-                style={{ cursor: 'pointer', marginRight: '8px', textDecoration: 'underline' }}>
-                {q}
-              </span>
-            ))}
-          </div>
-        )}
-
         {/* Input */}
         <input type="text" placeholder="Enter search query" value={query}
           onChange={e => setQuery(e.target.value)} onKeyDown={handleKeyDown}
@@ -230,26 +219,38 @@ function App() {
         {suggestion && <p style={{ color: 'orange', fontSize: '14px', marginTop: '10px' }}>{suggestion}</p>}
       </div>
 
-      {/* SEARCH RESULTS */}
-      <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0 0', width: '100%', maxWidth: '500px' }}>
-        {results.map((item, idx) => (
-          <div key={idx} style={{ position: 'relative', display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-            <li style={{
-              background: darkMode ? '#2a2a2a' : '#eee',
-              padding: '10px', borderRadius: '10px',
-              textAlign: 'left', flexGrow: 1,
-              boxShadow: '0 2px 10px rgba(0,0,0,0.3)', wordBreak: 'break-word'
-            }}>
-              <a href={item.url} target="_blank" rel="noopener noreferrer" style={{
-                color: '#66a6ff', fontWeight: '600'
-              }}>{item.title}</a>
-              <br />
-              <small style={{ color: darkMode ? '#aaa' : '#555' }}>{item.snippet}</small>
-            </li>
-            <CopyLinkButton url={item.url} />
-          </div>
-        ))}
-      </ul>
+      {/* RESULTS CONTAINER */}
+      <div style={{
+        marginTop: '30px',
+        width: '100%',
+        maxWidth: '600px',
+        background: darkMode ? 'rgba(20,20,20,0.9)' : '#fff',
+        borderRadius: '16px',
+        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+        padding: '20px',
+        position: 'relative'
+      }}>
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0, width: '100%' }}>
+          {results.map((item, idx) => (
+            <div key={idx} style={{ position: 'relative', display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
+              <li style={{
+                background: darkMode ? '#2a2a2a' : '#eee',
+                padding: '12px', borderRadius: '10px',
+                textAlign: 'left', flexGrow: 1,
+                boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+                wordBreak: 'break-word'
+              }}>
+                <a href={item.url} target="_blank" rel="noopener noreferrer" style={{
+                  color: '#66a6ff', fontWeight: '600'
+                }}>{item.title}</a>
+                <br />
+                <small style={{ color: darkMode ? '#aaa' : '#555' }}>{item.snippet}</small>
+              </li>
+              <CopyLinkButton url={item.url} />
+            </div>
+          ))}
+        </ul>
+      </div>
 
       {/* LINKEDIN */}
       <a href="https://www.linkedin.com/in/yauchau/" target="_blank" rel="noopener noreferrer" style={{
