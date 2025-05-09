@@ -110,7 +110,7 @@ function App() {
       background: darkMode ? 'linear-gradient(135deg, #141e30, #243b55)' : '#f0f0f0',
       color: darkMode ? '#fff' : '#222',
       fontFamily: "'Poppins', sans-serif",
-      overflow: 'hidden',
+      overflowX: 'hidden',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -120,8 +120,7 @@ function App() {
     }}>
       {/* SPLASH SCREEN */}
       <div style={{
-        position: 'absolute',
-        top: 0, left: 0, right: 0, bottom: 0,
+        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
         background: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)',
         zIndex: 10,
         display: 'flex',
@@ -139,7 +138,7 @@ function App() {
         </div>
       </div>
 
-      {/* HEADER + MOTTO */}
+      {/* HEADER */}
       <div style={{ textAlign: 'center', marginBottom: 'clamp(20px, 5vh, 40px)' }}>
         <div style={{ position: 'relative', display: 'inline-block' }}>
           <h1 style={{ fontSize: 'clamp(28px, 6vw, 48px)', margin: 0 }}>FastSearch</h1>
@@ -198,6 +197,19 @@ function App() {
           ))}
         </div>
 
+        {/* Search history */}
+        {searchHistory.length > 0 && (
+          <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '10px', textAlign: 'center' }}>
+            Recent: {searchHistory.map((q, idx) => (
+              <span key={idx} onClick={() => { setQuery(q); handleSearch(); }} style={{
+                cursor: 'pointer', marginRight: '8px', textDecoration: 'underline'
+              }}>
+                {q}
+              </span>
+            ))}
+          </div>
+        )}
+
         {/* Input */}
         <input type="text" placeholder="Enter search query" value={query}
           onChange={e => setQuery(e.target.value)} onKeyDown={handleKeyDown}
@@ -219,38 +231,56 @@ function App() {
         {suggestion && <p style={{ color: 'orange', fontSize: '14px', marginTop: '10px' }}>{suggestion}</p>}
       </div>
 
-      {/* RESULTS CONTAINER */}
-      <div style={{
-        marginTop: '30px',
-        width: '100%',
-        maxWidth: '600px',
-        background: darkMode ? 'rgba(20,20,20,0.9)' : '#fff',
-        borderRadius: '16px',
-        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
-        padding: '20px',
-        position: 'relative'
-      }}>
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0, width: '100%' }}>
-          {results.map((item, idx) => (
-            <div key={idx} style={{ position: 'relative', display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-              <li style={{
-                background: darkMode ? '#2a2a2a' : '#eee',
-                padding: '12px', borderRadius: '10px',
-                textAlign: 'left', flexGrow: 1,
-                boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
-                wordBreak: 'break-word'
+      {/* RESULTS */}
+      {results.length > 0 && (
+        <div style={{
+          marginTop: '30px',
+          width: '95%',
+          maxWidth: '600px',
+          background: darkMode ? 'rgba(20,20,20,0.9)' : '#fff',
+          borderRadius: '16px',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+          padding: '20px',
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
+        }}>
+          <ul style={{
+            listStyle: 'none',
+            padding: 0,
+            margin: 0,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            gap: '15px'
+          }}>
+            {results.map((item, idx) => (
+              <div key={idx} style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center'
               }}>
-                <a href={item.url} target="_blank" rel="noopener noreferrer" style={{
-                  color: '#66a6ff', fontWeight: '600'
-                }}>{item.title}</a>
-                <br />
-                <small style={{ color: darkMode ? '#aaa' : '#555' }}>{item.snippet}</small>
-              </li>
-              <CopyLinkButton url={item.url} />
-            </div>
-          ))}
-        </ul>
-      </div>
+                <li style={{
+                  background: darkMode ? '#2a2a2a' : '#eee',
+                  padding: '12px', borderRadius: '10px',
+                  textAlign: 'left', flexGrow: 1,
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+                  wordBreak: 'break-word'
+                }}>
+                  <a href={item.url} target="_blank" rel="noopener noreferrer" style={{
+                    color: '#66a6ff', fontWeight: '600'
+                  }}>{item.title}</a>
+                  <br />
+                  <small style={{ color: darkMode ? '#aaa' : '#555' }}>{item.snippet}</small>
+                </li>
+                <CopyLinkButton url={item.url} />
+              </div>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* LINKEDIN */}
       <a href="https://www.linkedin.com/in/yauchau/" target="_blank" rel="noopener noreferrer" style={{
